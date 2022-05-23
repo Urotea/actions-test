@@ -15,9 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       name: "チェックアウト"
+      with:
+        persist-credentials: false
+
     - name: "tagをpushする"
       run: | 
         PR_NUMBER=$(gh pr list -B ${{ env.BRANCH_TO }} -H ${{ env.BRANCH_FROM }} --state merged --json number -q ".[0].number")
         TAG_NAME=$(date +%Y%m%d)_PR#$PR_NUMBER
+        git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
         git tag $TAG_NAME
         git push origin $TAG_NAME
